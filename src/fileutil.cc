@@ -28,6 +28,8 @@
 #include <unistd.h>
 #if defined(__APPLE__)
 #include <mach-o/dyld.h>
+#elif defined(__FreeBSD__)
+#include <sys/sysctl.h>
 #endif
 
 #include <unordered_map>
@@ -192,6 +194,19 @@ std::string GetExecutablePath() {
   uint32_t size = PATH_MAX;
   if (_NSGetExecutablePath(mypath, &size) != 0) {
     ERROR("_NSGetExecutablePath failed");
+  }
+  mypath[size] = 0;
+  return {mypath};
+#elif defined(__FreeBSD__)
+  char mypath[PATH_MAX + 1];
+  size_t size = PATH_MAX;
+  int mib[4];
+  mib[0] = CTL_KERN;
+  mib[1] = KERN_PROC;
+  mib[2] = KERN_PROC_PATHNAME;
+  mib[3] = -1;
+  if (sysctl(mib, 4, mypath, &size, NULL, 0) != 0) {
+    ERROR("sysctl(KERN_PROC_PATHNAME) failed");
   }
   mypath[size] = 0;
   return {mypath};
