@@ -21,6 +21,9 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <string.h>
+#if defined(__FreeBSD__)
+#include <pthread_np.h>
+#endif
 
 #include "expr.h"
 #include "file.h"
@@ -163,6 +166,13 @@ Evaluator::Evaluator()
 #if defined(__APPLE__)
   stack_size_ = pthread_get_stacksize_np(pthread_self());
   stack_addr_ = (char*)pthread_get_stackaddr_np(pthread_self()) - stack_size_;
+#elif defined(__FreeBSD__)
+  pthread_attr_t attr;
+  CHECK(pthread_attr_init(&attr) == 0);
+  CHECK(pthread_attr_get_np(pthread_self(), &attr) == 0);
+  CHECK(pthread_attr_getstacksize(&attr, &stack_size_) == 0);
+  CHECK(pthread_attr_getstackaddr(&attr, &stack_addr_) == 0);
+  CHECK(pthread_attr_destroy(&attr) == 0);
 #else
   pthread_attr_t attr;
   CHECK(pthread_getattr_np(pthread_self(), &attr) == 0);
