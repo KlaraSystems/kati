@@ -22,6 +22,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#if defined(__FreeBSD__)
+#include <sys/wait.h>
+#endif
 #include <unistd.h>
 
 #include <algorithm>
