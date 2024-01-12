@@ -18,8 +18,8 @@ include Makefile.ckati
 
 info: ckati
 	@echo GNU MAKE VERSION
-	make --version
-	make -f Makefile version --no-print-directory
+	$(MAKE) --version
+	$(MAKE) -f Makefile version --no-print-directory
 	@echo
 	@echo CKATI VERSION
 	./ckati -f Makefile version
