@@ -362,10 +362,15 @@ class DepBuilder {
       for (Symbol t : targets)
         precious_.insert(t);
     }
+    if (GetRuleInputs(Intern(".DEFAULT"), &targets, &loc)) {
+      for (Symbol t : targets) {
+        default_.insert(t);
+        g_flags.targets.push_back(Intern(t.c_str()));
+      }
+    }
 
     // Note we can safely ignore .DELETE_ON_ERROR for --ninja mode.
-    static const char* kUnsupportedBuiltinTargets[] = {".DEFAULT",
-                                                       ".INTERMEDIATE",
+    static const char* kUnsupportedBuiltinTargets[] = {".INTERMEDIATE",
                                                        ".SECONDARY",
                                                        ".SECONDEXPANSION",
                                                        ".IGNORE",
@@ -951,6 +956,7 @@ class DepBuilder {
   std::unordered_map<Symbol, DepNode*> done_;
   SymbolSet phony_;
   SymbolSet precious_;
+  SymbolSet default_;
   SymbolSet restat_;
   Symbol depfile_var_name_;
   Symbol implicit_outputs_var_name_;
