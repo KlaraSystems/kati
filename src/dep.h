@@ -55,6 +55,8 @@ struct DepNode {
   Var* tags_var;
   Symbol output_pattern;
   Loc loc;
+
+  void printme(FILE *f, const char *prefix, Evaluator *ev, int *depth) const;
 };
 
 void MakeDep(Evaluator* ev,

@@ -139,8 +139,13 @@ class Executor {
 }  // namespace
 
 void Exec(const std::vector<NamedDepNode>& roots, Evaluator* ev) {
+  int depth = 0;
   Executor executor(ev);
   for (auto const& root : roots) {
+    if (g_flags.dump_graph) {
+      fprintf(stdout, "Exec(): Graph for root '%s'\n", root.first.c_str());
+      root.second->printme(stdout, "Graph: ", ev, &depth);
+    }
     executor.ExecNode(*root.second, nullptr);
   }
   if (executor.Count() == 0) {

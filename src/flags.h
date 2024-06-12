@@ -26,6 +26,7 @@ struct Flags {
   bool detect_android_echo;
   bool detect_depfiles;
   bool dump_kati_stamp;
+  bool dump_graph;
   const char* dump_include_graph;
   const char* dump_variable_assignment_trace;
   bool enable_debug;
