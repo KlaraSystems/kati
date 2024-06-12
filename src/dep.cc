@@ -23,6 +23,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "command.h"
 #include "eval.h"
 #include "fileutil.h"
 #include "flags.h"
@@ -288,6 +289,42 @@ DepNode::DepNode(Symbol o, bool p, bool r)
       depfile_var(NULL),
       ninja_pool_var(NULL),
       tags_var(NULL) {}
+
+void DepNode::printme(FILE *f, const char *prefix, Evaluator *ev,
+		      int *depth) const
+{
+    CommandEvaluator ce_(ev);
+    auto commands = ce_.Eval(*this);
+    for (const Command& command : commands) {
+      fprintf(f, "%s", prefix);
+      for (int i = 0; i < *depth; i++)
+	fputc(' ', f);
+      fprintf(f, "command: '%s' target: '%s'\n", command.cmd.c_str(),
+       command.output.c_str());
+   }
+
+    if (deps.size() > 0) {
+      fprintf(f, "%s", prefix);
+      for (int i = 0; i < *depth; i++)
+        fputc(' ', f);
+      fprintf(f, "DepNode at %p BEGIN\n", this);
+
+      for (NamedDepNode ndn: deps) {
+        fprintf(f, "%s", prefix);
+        for (int i = 0; i < *depth; i++)
+          fputc(' ', f);
+        fprintf(f, "NamedDepNode '%s' at %p\n", ndn.first.c_str(),
+	 &ndn.second);
+        int depth2 = *depth + 4;
+        ndn.second->printme(f, prefix, ev, &depth2);
+      }
+      fprintf(f, "%s", prefix);
+      for (int i = 0; i < *depth; i++)
+        fputc(' ', f);
+      fprintf(f, "DepNode at %p END\n", this);
+    }
+}
+
 
 class DepBuilder {
  public:
