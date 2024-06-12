@@ -370,10 +370,13 @@ class DepBuilder {
         WARN_LOC(loc, "kati doesn't support .SUFFIXES with prerequisites");
       }
     }
+    if (GetRuleInputs(Intern(".PRECIOUS"), &targets, &loc)) {
+      for (Symbol t : targets)
+        precious_.insert(t);
+    }
 
     // Note we can safely ignore .DELETE_ON_ERROR for --ninja mode.
     static const char* kUnsupportedBuiltinTargets[] = {".DEFAULT",
-                                                       ".PRECIOUS",
                                                        ".INTERMEDIATE",
                                                        ".SECONDARY",
                                                        ".SECONDEXPANSION",
@@ -976,6 +979,7 @@ class DepBuilder {
   Symbol first_rule_;
   std::unordered_map<Symbol, DepNode*> done_;
   SymbolSet phony_;
+  SymbolSet precious_;
   SymbolSet restat_;
   Symbol depfile_var_name_;
   Symbol implicit_outputs_var_name_;
