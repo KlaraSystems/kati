@@ -84,7 +84,7 @@ ifeq ($(shell uname),Linux)
 KATI_LIBS := -lrt -lpthread
 endif
 ifeq ($(shell uname),FreeBSD)
-KATI_LIBS := -lpthread
+KATI_LIBS := -lpthread -L/usr/local/lib
 endif
 
 # Rule to build ckati into KATI_BIN_PATH
