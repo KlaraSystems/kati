@@ -70,6 +70,8 @@ static void ReadBootstrapMakefile(const std::vector<Symbol>& targets,
       );
 
   if (!g_flags.no_builtin_rules) {
+    // FIXME - also need to clean out predefined suffix rules when
+    // --no-builtin-rules.  I don't think we have any, though.
     bootstrap += (
         // http://www.gnu.org/software/make/manual/make.html#Catalogue-of-Rules
         // The document above is actually not correct. See default.c:

@@ -105,7 +105,8 @@ void Flags::Parse(int argc, char** argv) {
       detect_depfiles = true;
     } else if (!strcmp(arg, "--color_warnings")) {
       color_warnings = true;
-    } else if (!strcmp(arg, "--no_builtin_rules")) {
+    } else if (!strcmp(arg, "--no_builtin_rules") ||
+     !strcmp(arg, "--no-builtin-rules")) {
       no_builtin_rules = true;
     } else if (!strcmp(arg, "--no_ninja_prelude")) {
       no_ninja_prelude = true;
